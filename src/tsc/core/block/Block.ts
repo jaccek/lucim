@@ -1,0 +1,3 @@
+interface Block {
+    convertToHtml(): HTMLElement
+}

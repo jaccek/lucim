@@ -1,0 +1,22 @@
+div {
+    float: left;
+}
+
+.editor textarea {
+    width: 100%;
+    height: 500px;
+}
+
+.block {
+    display: block;
+}
+
+#editorContainer {
+    width: 40%;
+}
+
+#slideContainer {
+    border: 1px solid black;
+    margin: 0px 10px;
+    width: 55%;
+}
