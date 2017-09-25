@@ -23,6 +23,10 @@ class HeaderBlockBuildingRule {
         return new HeaderBlock(content.substring(hashesCount + 1), hashesCount)
     }
 
+    isLineByLineBlock(): boolean {
+        return false
+    }
+
     private countStartingHashes(text: string): number {
         var hashesCount = 0
         for (let i = 0; i < text.length; ++i) {

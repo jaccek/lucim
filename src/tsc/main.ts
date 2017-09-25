@@ -16,5 +16,6 @@ function generateSlide() {
 window.onload = () => {
     document.getElementById('editorForm')!.onsubmit = generateSlide
     document.getElementById('slideEditor')!.oninput = generateSlide
-    // document.getElementById('slideEditor')!.addEventListener("keypress", () => generateSlide());
+
+    generateSlide()
 };
