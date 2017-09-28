@@ -1,11 +1,28 @@
 class BlockBuilder {
 
+    constructor(private line: string) {
+    }
+
+    build(): Block {
+        // if (isTextStartingWith(this.line, "# ")) {
+        //     return new HeaderBlock(this.line, 1)
+        // }
+        if (isTextStartingWith(this.line, "\\*")) {
+            return new ListItemBlock(this.line.substring(1))
+        }
+        return new TextBlock(this.line)
+    }
+}
+
+
+class BlockBuilderOld {
+
     private content: string = ''
     private buildingRules: BlockBuildingRule[] = []
 
     constructor() {
-        this.buildingRules.push(new HeaderBlockBuildingRule())
-        this.buildingRules.push(new ListItemBlockBuildingRule())
+        // this.buildingRules.push(new HeaderBlockBuildingRule())
+        // this.buildingRules.push(new ListItemBlockBuildingRule())
     }
 
     build(): Block {
@@ -26,12 +43,28 @@ class BlockBuilder {
         this.content += line.content.trim()
     }
 
-    cannotBeAppendBy(line: Line): boolean {
-        return !this.canBeAppendBy(line)
+    canBeAppendBy(line: Line): boolean {
+        if (this.isEmpty()) {
+            return true
+        }
+        const rule = this.findMatchingRule(line.content.trim())
+        if (rule != null) {
+            return !rule.isLineByLineBlock()
+        }
+        return !line.isEmpty()
     }
 
     hasContent(): boolean {
         return !this.isEmpty()
+    }
+
+    canHaveSubBlock(line: Line): boolean {
+        // TODO: implement
+        return false
+    }
+
+    appendSubBlock(line: Line): void {
+        // TODO: implement
     }
 
     private findMatchingRule(text: string): BlockBuildingRule | null {
@@ -41,17 +74,6 @@ class BlockBuilder {
             }
         }
         return null
-    }
-
-    private canBeAppendBy(line: Line): boolean {
-        if (this.isEmpty()) {
-            return true
-        }
-        const rule = this.findMatchingRule(line.content.trim())
-        if (rule != null) {
-            return !rule.isLineByLineBlock()
-        }
-        return !line.isEmpty()
     }
 
     private isEmpty(): boolean {

@@ -1,8 +1,12 @@
 class ListItemBlock {
 
-    static readonly prefix: string = "* "
+    private _content: string
+    get content() {
+        return this._content
+    }
 
-    constructor(private content: string) {
+    constructor(content: string) {
+        this._content = content
     }
 
     convertToHtml(): HTMLElement {
@@ -10,19 +14,31 @@ class ListItemBlock {
         element.innerHTML = this.content
         return element
     }
-}
 
-class ListItemBlockBuildingRule {
-
-    matches(content: string): boolean {
-        return isTextStartingWith(content, "\\" + ListItemBlock.prefix)
+    encapsulateIfNeeded(): Block {
+        return this // TODO: encapsulate with ListBlock
     }
 
-    buildBlock(content: string): Block {
-        return new ListItemBlock(content.substring(ListItemBlock.prefix.length))
+    canBeMergedWith(block: Block): boolean {
+        return !block.forcesNewBlock() && !block.isEmpty()
     }
 
-    isLineByLineBlock(): boolean {
+    merge(block: Block): void {
+        if (block.isEmpty()) {
+            return
+        }
+
+        if (!this.isEmpty()) {
+            this._content += " "
+        }
+        this._content += block.content.trim()
+    }
+
+    isEmpty(): boolean {
+        return this._content.trim().length == 0
+    }
+
+    forcesNewBlock(): boolean {
         return true
     }
 }

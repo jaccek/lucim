@@ -2,7 +2,8 @@ class TextToBlocksProcessor {
 
     private lines: Line[]
     private lineIndex: number = 0
-    private blockBuilder: BlockBuilder = new BlockBuilder()
+    private blockBuilder: BlockBuilderOld = new BlockBuilderOld()
+    private blocks: Block[] = []
 
     private get currentLine(): Line {
         return this.lines[this.lineIndex]
@@ -11,31 +12,38 @@ class TextToBlocksProcessor {
     constructor(text: string) {
         var textLines = text.split('\n')
 
-        this.lines = []
-        for (let i = 0; i < textLines.length; i++) {
-            this.lines.push(new Line(textLines[i]))
+        for (let i = 0; i < textLines.length; ++i) {
+            this.blocks.push(new BlockBuilder(textLines[i]).build())
         }
     }
 
     parse(): Block[] {
-        var blocks: Block[] = []
+        const basicBlocks = this.blocks
+        this.blocks = []
 
-        do {
-            if (this.blockBuilder.cannotBeAppendBy(this.currentLine) && this.blockBuilder.hasContent()) {
-                blocks.push(this.blockBuilder.build())
-                this.blockBuilder = new BlockBuilder()
+        let currentBlockIndex = 0
+        let nextBlockIndex = currentBlockIndex + 1
+
+        while (currentBlockIndex < basicBlocks.length) {
+            let currentBlock = basicBlocks[currentBlockIndex].encapsulateIfNeeded()
+
+            while (nextBlockIndex < basicBlocks.length) {
+                const nextBlock = basicBlocks[nextBlockIndex]
+
+                if (currentBlock.canBeMergedWith(nextBlock)) {
+                    currentBlock.merge(nextBlock)
+                    ++nextBlockIndex
+                } else {
+                    break;
+                }
             }
-
-            this.blockBuilder.append(this.currentLine)
-
-            this.goToNextLine()
-        } while (!this.isEndReached())
-
-        if (this.blockBuilder.hasContent()) {
-            blocks.push(this.blockBuilder.build())
+            if (!currentBlock.isEmpty()) {
+                this.blocks.push(currentBlock)
+            }
+            currentBlockIndex = nextBlockIndex++
         }
 
-        return blocks
+        return this.blocks
     }
 
     private isEndReached(): boolean {
