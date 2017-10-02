@@ -1,43 +1,36 @@
 class HeaderBlock {
 
-    constructor(private text: string, private hashesCount: number) {
+    private _content: string
+    get content() {
+        return this._content
+    }
+
+    constructor(text: string, private hashesCount: number) {
+        this._content = text
     }
 
     convertToHtml(): HTMLElement {
         var element = document.createElement('h' + this.hashesCount)
-        element.innerHTML = this.text
+        element.innerHTML = this._content
         return element
     }
+
+    encapsulateIfNeeded(): Block {
+        return this
+    }
+
+    canBeMergedWith(block: Block): boolean {
+        return false
+    }
+
+    merge(block: Block): void {
+    }
+
+    isEmpty(): boolean {
+        return this._content.length == 0
+    }
+
+    forcesNewBlock(): boolean {
+        return true
+    }
 }
-
-
-// class HeaderBlockBuildingRule {
-//
-//     matches(content: string): boolean {
-//         let hashesCount = this.countStartingHashes(content)
-//         return 0 < hashesCount && hashesCount < 7
-//     }
-//
-//     buildBlock(content: string): Block {
-//         let hashesCount = this.countStartingHashes(content)
-//         return new HeaderBlock(content.substring(hashesCount + 1), hashesCount)
-//     }
-//
-//     isLineByLineBlock(): boolean {
-//         return false
-//     }
-//
-//     private countStartingHashes(text: string): number {
-//         var hashesCount = 0
-//         for (let i = 0; i < text.length; ++i) {
-//             if (text.charAt(i) == '#') {
-//                 hashesCount++
-//             } else if (text.charAt(i) == ' ') {
-//                 return hashesCount
-//             } else {
-//                 break
-//             }
-//         }
-//         return 0
-//     }
-// }

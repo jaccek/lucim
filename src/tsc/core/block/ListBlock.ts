@@ -21,8 +21,8 @@ class ListBlock {
 
     canBeMergedWith(block: Block): boolean {
         const itemsCount = this.itemBlocks.length
-        return (block instanceof ListItemBlock)
-                || (block instanceof TextBlock && block.isEmpty())
+        return block instanceof ListItemBlock
+                || block.isEmpty()
                 || (itemsCount > 0 && this.itemBlocks[itemsCount - 1].canBeMergedWith(block) && !this.mergedEmptyBlock)
     }
 
