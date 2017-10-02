@@ -1,13 +1,6 @@
 class TextToBlocksProcessor {
 
-    private lines: Line[]
-    private lineIndex: number = 0
-    private blockBuilder: BlockBuilderOld = new BlockBuilderOld()
     private blocks: Block[] = []
-
-    private get currentLine(): Line {
-        return this.lines[this.lineIndex]
-    }
 
     constructor(text: string) {
         var textLines = text.split('\n')
@@ -44,13 +37,5 @@ class TextToBlocksProcessor {
         }
 
         return this.blocks
-    }
-
-    private isEndReached(): boolean {
-        return this.lineIndex >= this.lines.length
-    }
-
-    private goToNextLine(): void {
-        this.lineIndex++
     }
 }

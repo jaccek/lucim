@@ -16,7 +16,10 @@ class ListItemBlock {
     }
 
     encapsulateIfNeeded(): Block {
-        return this // TODO: encapsulate with ListBlock
+        const listBlock = new ListBlock()
+        listBlock.merge(this)
+        
+        return listBlock
     }
 
     canBeMergedWith(block: Block): boolean {
