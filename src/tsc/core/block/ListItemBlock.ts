@@ -5,8 +5,14 @@ class ListItemBlock {
         return this._content
     }
 
-    constructor(content: string) {
+    private _isOrdered: boolean
+    get isOrdered() {
+        return this._isOrdered
+    }
+
+    constructor(content: string, isOrdered: boolean) {
         this._content = content
+        this._isOrdered = isOrdered
     }
 
     convertToHtml(): HTMLElement {
@@ -18,7 +24,7 @@ class ListItemBlock {
     encapsulateIfNeeded(): Block {
         const listBlock = new ListBlock()
         listBlock.merge(this)
-        
+
         return listBlock
     }
 

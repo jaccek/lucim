@@ -8,7 +8,8 @@ class ListBlock {
     }
 
     convertToHtml(): HTMLElement {
-        var element = document.createElement('ul')
+        const htmlTag = this.isOrdered() ? 'ol' : 'ul'
+        const element = document.createElement(htmlTag)
         for (let i = 0; i < this.itemBlocks.length; ++i) {
             element.appendChild(this.itemBlocks[i].convertToHtml())
         }
@@ -21,7 +22,7 @@ class ListBlock {
 
     canBeMergedWith(block: Block): boolean {
         const itemsCount = this.itemBlocks.length
-        return block instanceof ListItemBlock
+        return (block instanceof ListItemBlock && this.isOrdered() == block.isOrdered)
                 || block.isEmpty()
                 || (itemsCount > 0 && this.itemBlocks[itemsCount - 1].canBeMergedWith(block) && !this.mergedEmptyBlock)
     }
@@ -46,5 +47,12 @@ class ListBlock {
 
     forcesNewBlock(): boolean {
         return true
+    }
+
+    private isOrdered(): boolean {
+        if (this.itemBlocks.length == 0) {
+            return false
+        }
+        return this.itemBlocks[0].isOrdered
     }
 }
