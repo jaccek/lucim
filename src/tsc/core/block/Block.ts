@@ -1,13 +1,27 @@
 interface Block {
-    content: string
+    // content: string
 
     convertToHtml(): HTMLElement
 
-    encapsulateIfNeeded(): Block
+    // encapsulateIfNeeded(): Block
+    //
+    // canBeMergedWith(block: Block): boolean
+    // merge(block: Block): void
+    //
+    // isEmpty(): boolean
+    // forcesNewBlock(): boolean
+}
 
-    canBeMergedWith(block: Block): boolean
-    merge(block: Block): void
+interface BlockBuilder {
+    content: string
+
+    encapsulateIfNeeded(): BlockBuilder
+
+    canBeMergedWith(block: BlockBuilder): boolean
+    merge(block: BlockBuilder): void
 
     isEmpty(): boolean
     forcesNewBlock(): boolean
+
+    build(): Block
 }

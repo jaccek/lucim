@@ -1,5 +1,18 @@
 class TextBlock {
 
+    constructor(private content: string) {
+    }
+
+    convertToHtml(): HTMLElement {
+        var paragraph = document.createElement('p')
+        paragraph.innerHTML = this.content
+        return paragraph
+    }
+}
+
+
+class TextBlockBuilder {
+
     private _content: string
     get content() {
         return this._content
@@ -9,22 +22,16 @@ class TextBlock {
         this._content = content
     }
 
-    convertToHtml(): HTMLElement {
-        var paragraph = document.createElement('p')
-        paragraph.innerHTML = this._content
-        return paragraph
-    }
-
-    encapsulateIfNeeded(): Block {
+    encapsulateIfNeeded(): BlockBuilder {
         return this
     }
 
-    canBeMergedWith(block: Block): boolean {
+    canBeMergedWith(block: BlockBuilder): boolean {
         return (!block.forcesNewBlock() && this.isEmpty())
                 || (!block.forcesNewBlock() && !block.isEmpty())
     }
 
-    merge(block: Block): void {
+    merge(block: BlockBuilder): void {
         if (block.isEmpty()) {
             return
         }
@@ -41,5 +48,9 @@ class TextBlock {
 
     forcesNewBlock(): boolean {
         return false
+    }
+
+    build(): Block {
+        return new TextBlock(this._content)
     }
 }

@@ -20,19 +20,38 @@ class ListItemBlock {
         element.innerHTML = this.content
         return element
     }
+}
 
-    encapsulateIfNeeded(): Block {
-        const listBlock = new ListBlock()
-        listBlock.merge(this)
 
-        return listBlock
+class ListItemBlockBuilder {
+
+    private _content: string
+    get content() {
+        return this._content
     }
 
-    canBeMergedWith(block: Block): boolean {
+    private _isOrdered: boolean
+    get isOrdered() {
+        return this._isOrdered
+    }
+
+    constructor(content: string, isOrdered: boolean) {
+        this._content = content
+        this._isOrdered = isOrdered
+    }
+
+    encapsulateIfNeeded(): BlockBuilder {
+        const listBlockBuilder = new ListBlockBuilder()
+        listBlockBuilder.merge(this)
+
+        return listBlockBuilder
+    }
+
+    canBeMergedWith(block: BlockBuilder): boolean {
         return !block.forcesNewBlock() && !block.isEmpty()
     }
 
-    merge(block: Block): void {
+    merge(block: BlockBuilder): void {
         if (block.isEmpty()) {
             return
         }
@@ -49,5 +68,9 @@ class ListItemBlock {
 
     forcesNewBlock(): boolean {
         return true
+    }
+
+    build(): ListItemBlock {
+        return new ListItemBlock(this._content, this.isOrdered)
     }
 }

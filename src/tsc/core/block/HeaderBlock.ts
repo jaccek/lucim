@@ -1,5 +1,18 @@
 class HeaderBlock {
 
+    constructor(private content: string, private hashesCount: number) {
+    }
+
+    convertToHtml(): HTMLElement {
+        var element = document.createElement('h' + this.hashesCount)
+        element.innerHTML = this.content
+        return element
+    }
+}
+
+
+class HeaderBlockBuilder {
+
     private _content: string
     get content() {
         return this._content
@@ -9,21 +22,15 @@ class HeaderBlock {
         this._content = text
     }
 
-    convertToHtml(): HTMLElement {
-        var element = document.createElement('h' + this.hashesCount)
-        element.innerHTML = this._content
-        return element
-    }
-
-    encapsulateIfNeeded(): Block {
+    encapsulateIfNeeded(): BlockBuilder {
         return this
     }
 
-    canBeMergedWith(block: Block): boolean {
+    canBeMergedWith(block: BlockBuilder): boolean {
         return false
     }
 
-    merge(block: Block): void {
+    merge(block: BlockBuilder): void {
     }
 
     isEmpty(): boolean {
@@ -32,5 +39,9 @@ class HeaderBlock {
 
     forcesNewBlock(): boolean {
         return true
+    }
+
+    build(): Block {
+        return new HeaderBlock(this._content, this.hashesCount)
     }
 }

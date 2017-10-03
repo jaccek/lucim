@@ -1,18 +1,18 @@
 class TextToBlocksProcessor {
 
-    private blocks: Block[] = []
+    private builders: BlockBuilder[] = []
 
     constructor(text: string) {
         var textLines = text.split('\n')
 
         for (let i = 0; i < textLines.length; ++i) {
-            this.blocks.push(new BlockBuilder(textLines[i]).build())
+            this.builders.push(new LineToBlockBuilder(textLines[i]).build())
         }
     }
 
     parse(): Block[] {
-        const basicBlocks = this.blocks
-        this.blocks = []
+        const basicBlocks = this.builders
+        this.builders = []
 
         let currentBlockIndex = 0
         let nextBlockIndex = currentBlockIndex + 1
@@ -31,11 +31,19 @@ class TextToBlocksProcessor {
                 }
             }
             if (!currentBlock.isEmpty()) {
-                this.blocks.push(currentBlock)
+                this.builders.push(currentBlock)
             }
             currentBlockIndex = nextBlockIndex++
         }
 
-        return this.blocks
+        return this.convertBuildersToBlocks()
+    }
+
+    private convertBuildersToBlocks(): Block[] {
+        let blocks: Block[] = []
+        for (let i = 0; i < this.builders.length; ++i) {
+            blocks.push(this.builders[i].build())
+        }
+        return blocks
     }
 }

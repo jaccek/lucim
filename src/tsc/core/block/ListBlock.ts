@@ -1,40 +1,51 @@
 class ListBlock {
 
-    private itemBlocks: ListItemBlock[] = []
-    private mergedEmptyBlock: boolean = false
+    constructor(private items: ListItemBlock[], private isOrdered: boolean) {
+    }
 
     get content() {
         return ""
     }
 
     convertToHtml(): HTMLElement {
-        const htmlTag = this.isOrdered() ? 'ol' : 'ul'
+        const htmlTag = this.isOrdered ? 'ol' : 'ul'
         const element = document.createElement(htmlTag)
-        for (let i = 0; i < this.itemBlocks.length; ++i) {
-            element.appendChild(this.itemBlocks[i].convertToHtml())
+        for (let i = 0; i < this.items.length; ++i) {
+            element.appendChild(this.items[i].convertToHtml())
         }
         return element
     }
+}
 
-    encapsulateIfNeeded(): Block {
+
+class ListBlockBuilder {
+
+    private itemBlocks: ListItemBlockBuilder[] = []
+    private mergedEmptyBlock: boolean = false
+
+    get content() {
+        return ""
+    }
+
+    encapsulateIfNeeded(): BlockBuilder {
         return this
     }
 
-    canBeMergedWith(block: Block): boolean {
+    canBeMergedWith(block: BlockBuilder): boolean {
         const itemsCount = this.itemBlocks.length
-        return (block instanceof ListItemBlock && this.isOrdered() == block.isOrdered)
+        return (block instanceof ListItemBlockBuilder && this.isOrdered() == block.isOrdered)
                 || block.isEmpty()
                 || (itemsCount > 0 && this.itemBlocks[itemsCount - 1].canBeMergedWith(block) && !this.mergedEmptyBlock)
     }
 
-    merge(block: Block): void {
+    merge(block: BlockBuilder): void {
         if (block.isEmpty()) {
             this.mergedEmptyBlock = true;
             return
         }
 
         this.mergedEmptyBlock = false
-        if (block instanceof ListItemBlock) {
+        if (block instanceof ListItemBlockBuilder) {
             this.itemBlocks.push(block)
         } else {
             this.itemBlocks[this.itemBlocks.length - 1].merge(block)
@@ -47,6 +58,15 @@ class ListBlock {
 
     forcesNewBlock(): boolean {
         return true
+    }
+
+    build(): Block {
+        let items: ListItemBlock[] = []
+        for (let i = 0; i < this.itemBlocks.length; ++i) {
+            items.push(this.itemBlocks[i].build())
+        }
+
+        return new ListBlock(items, this.isOrdered())
     }
 
     private isOrdered(): boolean {
