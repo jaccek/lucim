@@ -11,7 +11,7 @@ class TextBlock {
 }
 
 
-class TextBlockBuilder {
+class TextBlockBuilder extends BlockBuilder {
 
     private _content: string
     get content() {
@@ -19,11 +19,8 @@ class TextBlockBuilder {
     }
 
     constructor(content: string) {
+        super()
         this._content = content
-    }
-
-    encapsulateIfNeeded(): BlockBuilder {
-        return this
     }
 
     canBeMergedWith(block: BlockBuilder): boolean {
@@ -40,10 +37,6 @@ class TextBlockBuilder {
             this._content += " "
         }
         this._content += block.content.trim()
-    }
-
-    isEmpty(): boolean {
-        return this._content.trim().length == 0
     }
 
     forcesNewBlock(): boolean {

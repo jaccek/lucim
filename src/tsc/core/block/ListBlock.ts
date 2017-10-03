@@ -18,17 +18,13 @@ class ListBlock {
 }
 
 
-class ListBlockBuilder {
+class ListBlockBuilder extends BlockBuilder {
 
     private itemBlocks: ListItemBlockBuilder[] = []
     private mergedEmptyBlock: boolean = false
 
     get content() {
         return ""
-    }
-
-    encapsulateIfNeeded(): BlockBuilder {
-        return this
     }
 
     canBeMergedWith(block: BlockBuilder): boolean {

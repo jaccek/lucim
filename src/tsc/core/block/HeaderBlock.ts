@@ -11,7 +11,7 @@ class HeaderBlock {
 }
 
 
-class HeaderBlockBuilder {
+class HeaderBlockBuilder extends BlockBuilder {
 
     private _content: string
     get content() {
@@ -19,11 +19,8 @@ class HeaderBlockBuilder {
     }
 
     constructor(text: string, private hashesCount: number) {
+        super()
         this._content = text
-    }
-
-    encapsulateIfNeeded(): BlockBuilder {
-        return this
     }
 
     canBeMergedWith(block: BlockBuilder): boolean {
@@ -31,10 +28,6 @@ class HeaderBlockBuilder {
     }
 
     merge(block: BlockBuilder): void {
-    }
-
-    isEmpty(): boolean {
-        return this._content.length == 0
     }
 
     forcesNewBlock(): boolean {

@@ -23,7 +23,7 @@ class ListItemBlock {
 }
 
 
-class ListItemBlockBuilder {
+class ListItemBlockBuilder extends BlockBuilder {
 
     private _content: string
     get content() {
@@ -36,6 +36,7 @@ class ListItemBlockBuilder {
     }
 
     constructor(content: string, isOrdered: boolean) {
+        super()
         this._content = content
         this._isOrdered = isOrdered
     }
@@ -60,10 +61,6 @@ class ListItemBlockBuilder {
             this._content += " "
         }
         this._content += block.content.trim()
-    }
-
-    isEmpty(): boolean {
-        return this._content.trim().length == 0
     }
 
     forcesNewBlock(): boolean {
